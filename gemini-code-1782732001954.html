@@ -1,0 +1,666 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Open Cloze Test Mastery - Ms Lê Hằng English</title>
+    <link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@500;700;900&display=swap" rel="stylesheet">
+    
+    <style>
+        :root {
+            --primary-color: #6C5CE7;
+            --secondary-color: #FDCB6E;
+            --accent-color: #00CEC9;
+            --correct-color: #10B981;
+            --wrong-color: #EF4444;
+            --card-bg: #FFFFFF;
+            --text-color: #2D3436;
+        }
+
+        * {
+            box-sizing: border-box;
+            font-family: 'Quicksand', sans-serif;
+            transition: all 0.2s ease;
+        }
+
+        body {
+            margin: 0;
+            padding: 20px;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            background: linear-gradient(135deg, #a8c0ff, #3f2b96, #e8cbc0, #636fa4);
+            background-size: 400% 400%;
+            animation: gradientBG 20s ease infinite;
+            position: relative;
+            overflow-x: hidden;
+        }
+
+        @keyframes gradientBG {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+
+        .container {
+            width: 100%;
+            max-width: 900px;
+            z-index: 1;
+        }
+
+        .header-teacher {
+            font-size: 1.2rem;
+            font-weight: 900;
+            color: #FFFFFF;
+            text-align: center;
+            text-shadow: 2px 2px 5px rgba(0,0,0,0.3);
+            margin-bottom: 10px;
+            letter-spacing: 1px;
+        }
+
+        .main-title {
+            text-align: center;
+            color: #FFFFFF;
+            font-size: 2.2rem;
+            font-weight: 900;
+            margin-bottom: 20px;
+            text-shadow: 0 4px 10px rgba(0,0,0,0.2);
+        }
+
+        .notice-box {
+            background: #EFF6FF;
+            border: 3px solid #3B82F6;
+            border-radius: 16px;
+            padding: 16px;
+            margin-bottom: 30px;
+            box-shadow: 0 6px 0 #1D4ED8;
+            text-align: center;
+            color: #1E3A8A;
+            font-size: 1rem;
+            line-height: 1.6;
+        }
+
+        .notice-title {
+            font-weight: 900;
+            font-size: 1.2rem;
+            color: #1D4ED8;
+            margin-bottom: 6px;
+            display: block;
+        }
+
+        .section-title {
+            background: linear-gradient(90deg, var(--primary-color), #8E44AD);
+            color: white;
+            padding: 12px 24px;
+            border-radius: 14px;
+            margin: 35px 0 15px 0;
+            box-shadow: 0 5px 0 #4A2E80;
+            font-weight: 900;
+            font-size: 1.1rem;
+            text-transform: uppercase;
+        }
+
+        /* GIAO DIỆN ĐOẠN VĂN CLOZE TEST NHÚNG Ô ĐIỀN TỪ */
+        .passage-card {
+            background: var(--card-bg);
+            border: 3px solid #E2E8F0;
+            border-radius: 18px;
+            padding: 30px;
+            margin-bottom: 15px;
+            box-shadow: 0 6px 0 #CBD5E1;
+            line-height: 2.3;
+            font-size: 1.15rem;
+            color: var(--text-color);
+            text-align: justify;
+        }
+
+        /* THIẾT KẾ Ô NHẬP LIỆU TRONG ĐOẠN VĂN */
+        .cloze-input {
+            display: inline-block;
+            padding: 2px 8px;
+            font-size: 1.1rem;
+            font-weight: 700;
+            border: 3px solid #CBD5E1;
+            border-radius: 8px;
+            outline: none;
+            color: #0F172A;
+            text-align: center;
+            width: 140px;
+            background: #F8FAFC;
+            margin: 0 4px;
+            vertical-align: middle;
+        }
+
+        .cloze-input:focus {
+            border-color: var(--primary-color);
+            background: #FFFFFF;
+            box-shadow: 0 0 0 3px rgba(108, 92, 231, 0.15);
+        }
+
+        .cloze-input.correct {
+            border-color: var(--correct-color) !important;
+            background-color: #ECFDF5 !important;
+            color: #065F46 !important;
+        }
+
+        .cloze-input.wrong {
+            border-color: var(--wrong-color) !important;
+            background-color: #FEF2F2 !important;
+            color: #991B1B !important;
+            animation: shake 0.4s ease;
+        }
+
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            20%, 60% { transform: translateX(-4px); }
+            40%, 80% { transform: translateX(4px); }
+        }
+
+        /* SỐ THỨ TỰ BÊN CẠNH Ô TRỐNG */
+        .blank-idx {
+            color: #4A5568;
+            font-weight: 900;
+            font-size: 1rem;
+            margin-right: 2px;
+        }
+
+        /* NÚT KIỂM TRA CHO TỪNG PHẦN */
+        .section-control {
+            display: flex;
+            justify-content: flex-end;
+            margin-top: 10px;
+        }
+
+        .btn-check-section {
+            background: #00CEC9;
+            color: white;
+            border: none;
+            padding: 10px 22px;
+            font-size: 1rem;
+            font-weight: 900;
+            border-radius: 12px;
+            cursor: pointer;
+            box-shadow: 0 4px 0 #00A8A4;
+        }
+
+        .btn-check-section:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 0 #00A8A4;
+        }
+
+        .btn-check-section:active {
+            transform: translateY(2px);
+            box-shadow: 0 2px 0 #00A8A4;
+        }
+
+        /* HỘP GIẢI THÍCH NGỮ PHÁP */
+        .explanation-panel {
+            background: #F8FAFC;
+            border-left: 6px solid var(--primary-color);
+            border-radius: 4px 12px 12px 4px;
+            padding: 20px;
+            margin-top: 15px;
+            display: none;
+            animation: fadeIn 0.4s ease forwards;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(5px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .exp-item {
+            margin-bottom: 10px;
+            font-size: 0.95rem;
+            color: #475569;
+            line-height: 1.6;
+        }
+
+        .exp-item:last-child { margin-bottom: 0; }
+
+        .badge-idx {
+            background: #E2E8F0;
+            color: #475569;
+            padding: 2px 8px;
+            border-radius: 6px;
+            font-weight: 900;
+            margin-right: 5px;
+        }
+
+        /* NỘP BÀI TỔNG */
+        .footer-actions {
+            text-align: center;
+            margin: 50px 0;
+        }
+
+        .btn-submit-all {
+            background: #FF7675;
+            color: white;
+            font-size: 1.4rem;
+            font-weight: 900;
+            padding: 15px 50px;
+            border: none;
+            border-radius: 30px;
+            cursor: pointer;
+            box-shadow: 0 8px 0 #D63031;
+        }
+
+        .btn-submit-all:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 11px 0 #D63031;
+        }
+
+        /* MODAL KẾT QUẢ TỔNG KẾT */
+        .modal-mask {
+            position: fixed;
+            top:0; left:0; width:100%; height:100%;
+            background: rgba(0,0,0,0.6);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 200;
+            display: none;
+        }
+
+        .modal-box {
+            background: #FFFFFF;
+            padding: 35px;
+            border-radius: 24px;
+            max-width: 550px;
+            width: 90%;
+            text-align: center;
+            border: 5px solid var(--accent-color);
+            box-shadow: 0 12px 0 #00A8A4;
+            animation: popUp 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
+        }
+
+        @keyframes popUp {
+            from { transform: scale(0.8); opacity: 0; }
+            to { transform: scale(1); opacity: 1; }
+        }
+
+        .score-num {
+            font-size: 4rem;
+            font-weight: 900;
+            color: var(--primary-color);
+            margin: 10px 0;
+        }
+
+        .feedback-msg {
+            font-size: 1.1rem;
+            font-weight: 700;
+            color: #2D3436;
+            line-height: 1.6;
+            margin-bottom: 25px;
+        }
+
+        .btn-reset {
+            background: var(--accent-color);
+            color: white;
+            border: none;
+            padding: 12px 35px;
+            font-weight: 900;
+            font-size: 1rem;
+            border-radius: 12px;
+            cursor: pointer;
+            box-shadow: 0 4px 0 #00A8A4;
+        }
+
+        canvas {
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            pointer-events: none;
+            z-index: 150;
+        }
+    </style>
+</head>
+<body>
+
+    <canvas id="canvas-confetti"></canvas>
+
+    <div class="container">
+        <div class="header-teacher">Giáo viên biên soạn: Ms Lê Hằng English</div>
+        <h1 class="main-title">OPEN CLOZE TEST MASTERY</h1>
+        
+        <div class="notice-box">
+            <span class="notice-title">📝 HƯỚNG DẪN HOÀN THÀNH BÀI TẬP ĐIỀN TỪ 📝</span>
+            Đọc kỹ ngữ cảnh và nhập <b>DUY NHẤT MỘT TỪ TỐT NHẤT</b> vào mỗi ô trống. Khi hoàn thành từng đoạn, hãy nhấn nút <b>"Kiểm tra đáp án cụm này"</b> để xem giải thích chi tiết và chấm điểm nóng!
+        </div>
+
+        <div id="dynamic-cloze-root"></div>
+
+        <div class="footer-actions">
+            <button class="btn-submit-all" onclick="calculateFinalScore()">NỘP BÀI TỔNG KẾT ĐIỂM</button>
+        </div>
+    </div>
+
+    <div class="modal-mask" id="score-modal">
+        <div class="modal-box">
+            <h2 style="margin-top:0; color: var(--correct-color);">✨ THÀNH TÍCH CỦA BẠN ✨</h2>
+            <div class="score-num" id="txt-score">0/0</div>
+            <div class="feedback-msg" id="txt-feedback"></div>
+            <button class="btn-reset" onclick="resetQuiz()">Làm lại bài thi</button>
+        </div>
+    </div>
+
+    <script>
+        // WEB AUDIO API - PHÁT ÂM THANH TRỰC TIẾP TỰ CHỨA
+        const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+        function playChime(freq, type, duration) {
+            try {
+                if (audioCtx.state === 'suspended') audioCtx.resume();
+                const osc = audioCtx.createOscillator();
+                const gain = audioCtx.createGain();
+                osc.type = type;
+                osc.frequency.setValueAtTime(freq, audioCtx.currentTime);
+                gain.gain.setValueAtTime(0.15, audioCtx.currentTime);
+                gain.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + duration);
+                osc.connect(gain);
+                gain.connect(audioCtx.destination);
+                osc.start();
+                osc.stop(audioCtx.currentTime + duration);
+            } catch(e) {}
+        }
+        function soundSuccess() {
+            playChime(523.25, 'sine', 0.15);
+            setTimeout(() => playChime(659.25, 'sine', 0.25), 100);
+        }
+        function soundError() {
+            playChime(150, 'sawtooth', 0.2);
+            setTimeout(() => playChime(110, 'sawtooth', 0.25), 120);
+        }
+
+        // DATABASE TOÀN BỘ 5 PHẦN BÀI ĐIỀN TỪ (OPEN CLOZE TEXT)
+        const clozeData = [
+            {
+                sectionId: "p1",
+                title: "Passage 1: TRADITIONS AND CUSTOMS IN GREAT BRITAIN (Đề chuyên Tuyên Quang)",
+                rawText: "Every nation and every country has its own customs and traditions. In Britain, traditions [blank_p1_1] a more important part in the life of the people than in [blank_p1_2] countries. Englishmen are proud [blank_p1_3] their traditions and carefully keep them up. <br><br>It has been the law [blank_p1_4] about 300 years that all theaters are closed on Sundays. No letters are [blank_p1_5], only a few papers are published. <br><br>To this day, an English family prefers a house with a garden [blank_p1_6] a flat in a modern house [blank_p1_7] central heating. English people like gardens. Sometimes, [blank_p1_8] garden in front of the house is a little square covered with cement painted green in [blank_p1_9] of grass and a box of flowers. <br><br>Holidays are especially rich in old traditions and [blank_p1_10] different in Scotland, Ireland, Wales and England. Christmas is a great English national holiday, but in Scotland, it is not kept, except by clerks in banks, all shops and factories are working.",
+                questions: [
+                    { id: "p1_1", label: "1", answers: ["play"], exp: "Cụm từ cố định 'play an important part' (đóng vai trò quan trọng)." },
+                    { id: "p1_2", label: "2", answers: ["other"], exp: "So sánh cấu trúc 'than in other countries' (hơn ở các quốc gia khác)." },
+                    { id: "p1_3", label: "3", answers: ["of"], exp: "Tính từ đi kèm giới từ đặc trưng: 'proud of' (tự hào về)." },
+                    { id: "p1_4", label: "4", answers: ["for"], exp: "Dùng giới từ 'for' đứng trước một khoảng thời gian kéo dài (for about 300 years)." },
+                    { id: "p1_5", label: "5", answers: ["delivered", "sent"], exp: "Dạng câu bị động: 'No letters are delivered/sent' (Không có thư từ nào được phát/giao đi)." },
+                    { id: "p1_6", label: "6", answers: ["to"], exp: "Cấu trúc ưu tiên: 'prefer something to something' (thích cái gì hơn cái gì)." },
+                    { id: "p1_7", label: "7", answers: ["with"], exp: "Giới từ 'with' chỉ thuộc tính có sẵn: 'a house with central heating' (nhà có hệ thống sưởi trung tâm)." },
+                    { id: "p1_8", label: "8", answers: ["the"], exp: "Mạo từ xác định 'the garden' vì khu vườn đã được làm rõ bằng cụm từ 'in front of the house'." },
+                    { id: "p1_9", label: "9", answers: ["imitation"], exp: "Cụm danh từ nâng cao: 'in imitation of grass' (nhại theo/bắt chước thảm cỏ tự nhiên)." },
+                    { id: "p1_10", label: "10", answers: ["are"], exp: "Động từ 'to be' chia số nhiều tương thích song hành với chủ ngữ 'Holidays'." }
+                ]
+            },
+            {
+                sectionId: "p2",
+                title: "Passage 2: A POP STAR - JOHN LENNON (Đề chuyên Quốc Học Huế)",
+                rawText: "John Lennon was <span style='color:#7F8C8D;font-weight:bold;'>(0) born</span> in Liverpool in 1940. He was always [blank_p2_1] on music and played in a pop group [blank_p2_2] school and Art college. John [blank_p2_3] married to Cynthia in 1962 and they had a son [blank_p2_4] name was Julian. At that time, John was a member of a group [blank_p2_5] “The Beatles”. Many beautiful songs [blank_p2_6] written by John and wherever the group went, crowds of fans gathered to see them. They [blank_p2_7] scream and faint when “The Beatles” played and lots of people have their hair cut in a Beatles style. Soon, everyone had heard [blank_p2_8] “The Beatles” and John was [blank_p2_9] richer than he had ever thought. <br><br>Having achieved world-wide success, John started to make records [blank_p2_10] his own after 1968, and it was in the same year when [blank_p2_11] marriage to Cynthia came to an end. He had met Yoko Ono [blank_p2_12] he married the following year. John lost weight and grew his hair long, as can [blank_p2_13] seen on the covers of the records that he made with Yoko. He set up home in the United States and had a son called Sean. Many people considered John Lennon to be [blank_p2_14] most talented of all “The Beatles”. He sang about peace and love and so when he was murdered by one of his fans, outside his New York apartment, the whole world [blank_p2_15] shocked. More than 50,000 fans turned up to a ceremony in his memory. He was only forty when he died.",
+                questions: [
+                    { id: "p2_1", label: "1", answers: ["keen"], exp: "Tính từ đi kèm cấu trúc: 'keen on something' (đam mê, yêu thích cái gì)." },
+                    { id: "p2_2", label: "2", answers: ["at"], exp: "Giới từ chỉ địa điểm/hoạt động cố định: 'at school' (ở trường học)." },
+                    { id: "p2_3", label: "3", answers: ["got", "was"], exp: "Cấu trúc kết hôn: 'get married to someone' chia ở quá khứ thành 'got/was married'." },
+                    { id: "p2_4", label: "4", answers: ["whose"], exp: "Đại từ quan hệ sở hữu 'whose name' thay thế cho sở hữu cách của đứa con trai trước đó." },
+                    { id: "p2_5", label: "5", answers: ["called", "named"], exp: "Mệnh đề quan hệ rút gọn dạng bị động: 'a group (which was) called/named...'." },
+                    { id: "p2_6", label: "6", answers: ["were"], exp: "Thì Quá khứ đơn thể bị động với chủ ngữ số nhiều 'Many beautiful songs were written'." },
+                    { id: "p2_7", label: "7", answers: ["would"], exp: "Dùng trợ động từ 'would' để diễn tả thói quen, hành động lặp đi lặp lại trong quá khứ." },
+                    { id: "p2_8", label: "8", answers: ["of", "about"], exp: "Cụm động từ cố định: 'hear of / hear about someone' (nghe danh, nghe kể về ai)." },
+                    { id: "p2_9", label: "9", answers: ["much", "far"], exp: "Phó từ dùng để bổ ngữ nhấn mạnh tính chất cho so sánh hơn (much/far richer)." },
+                    { id: "p2_10", label: "10", answers: ["on"], exp: "Cụm trạng từ cố định mang tính cá nhân: 'on his own' (tự thân, một mình làm)." },
+                    { id: "p2_11", label: "11", answers: ["his"], exp: "Tính từ sở hữu 'his marriage' thay thế cho cuộc hôn nhân của John." },
+                    { id: "p2_12", label: "12", answers: ["whom", "who"], exp: "Đại từ quan hệ đóng vai trò tân ngữ chỉ người thay cho danh từ Yoko Ono." },
+                    { id: "p2_13", label: "13", answers: ["be"], exp: "Cấu trúc bị động với động từ khuyết thiếu: 'as can be seen' (như có thể được nhìn thấy)." },
+                    { id: "p2_14", label: "14", answers: ["the"], exp: "Sử dụng mạo từ 'the' bắt buộc trong cấu trúc so sánh nhất: 'the most talented'." },
+                    { id: "p2_15", label: "15", answers: ["was"], exp: "Thì quá khứ đơn dạng bị động với chủ ngữ ngôi thứ 3 số ít: 'the whole world was shocked'." }
+                ]
+            },
+            {
+                sectionId: "p3",
+                title: "Passage 3: GLOBAL VILLAGE / TRAVEL (Đề chuyên Bà Rịa Vũng Tàu)",
+                rawText: "Travelling to all corners of the world is [blank_p3_1] easier and easier. We live [blank_p3_2] a global village, but how well do we know and understand each other? <br><br>Here is [blank_p3_3] simple test. Imagine you have arranged a meeting at 4 p.m. What time should you expect your foreign business colleagues to arrive? If they are German, they ‘ll be exactly [blank_p3_4] time. If they are American, they ‘ll probably be 15 minutes early. If they are British, they be 15 minutes [blank_p3_5], and you should allow up to an hour for the Indians. Therefore, these are some small advice in [blank_p3_6] not to behave badly abroad. In France you shouldn’t sit down in a cafard until you are shaken hands with everyone you know. In Afghanistan you’d better spend at last 5 minutes [blank_p3_7] hello. In Pakistan you mustn’t wink. It is offensive. In the Middle East you must never use the left hand for greeting, eating, drinking or smoking. Also, you should care not to admire [blank_p3_8] in your host’s home. They will feel that they have to give it to you. In Russia you must your hosts drink for drink or they will think you are unfriendly. In Thailand you should clasp your hands [blank_p3_9] and lower your head and your eyes when you greet someone. In America you should eat your hamburger with both hands and as quickly as [blank_p3_10]. You shouldn’t try to have a conversation until it is eaten.",
+                questions: [
+                    { id: "p3_1", label: "1", answers: ["getting", "becoming"], exp: "Cấu trúc tính từ lũy tiến chỉ xu hướng đổi thay: 'get/become + adj-er and adj-er'." },
+                    { id: "p3_2", label: "2", answers: ["in"], exp: "Giới từ chỉ nơi chốn: 'live in a global village' (sống trong một ngôi làng toàn cầu)." },
+                    { id: "p3_3", label: "3", answers: ["a"], exp: "Dùng mạo từ bất định 'a' đứng trước danh từ đếm được số ít chưa xác định." },
+                    { id: "p3_4", label: "4", answers: ["on"], exp: "Cụm trạng từ thời gian cố định: 'on time' (đúng giờ, không lệch một phút)." },
+                    { id: "p3_5", label: "5", answers: ["late"], exp: "Đối lập với 'early' ở vế trước, ngữ cảnh chỉ việc người Anh thường trễ 15 phút (15 minutes late)." },
+                    { id: "p3_6", label: "6", answers: ["order"], exp: "Cấu trúc mục đích dạng phủ định: 'in order not to do something' (để không làm gì)." },
+                    { id: "p3_7", label: "7", answers: ["saying"], exp: "Cấu trúc tiêu tốn thời gian: 'spend time + V-ing' -> 'spend 5 minutes saying hello'." },
+                    { id: "p3_8", label: "8", answers: ["anything"], exp: "Dùng đại từ bất định 'anything' trong câu mang nghĩa phủ định/răn đe 'not to admire anything'." },
+                    { id: "p3_9", label: "9", answers: ["together"], exp: "Cụm động từ hành động: 'clasp your hands together' (chắp hai tay lại với nhau)." },
+                    { id: "p3_10", label: "10", answers: ["possible"], exp: "Cấu trúc thành ngữ so sánh: 'as + adj/adv + as possible' (càng nhanh càng tốt)." }
+                ]
+            },
+            {
+                sectionId: "p4",
+                title: "Passage 4: TELEVISION (Đề chuyên Nam Định)",
+                rawText: "Television first <span style='color:#7F8C8D;font-weight:bold;'>(0) appeared</span> some fifty years ago in the 1950s. Since then, it has been one of the [blank_p4_1] popular sources of entertainment for both the old and the young. Television offers cartoon for children, world news, music and many other [blank_p4_2] someone is interested in sports, for [blank_p4_3] he can just choose the right sports channel. There he can enjoy a broadcast of an international football match as it is actually happening. Television is also a very useful way for companies to advertise their products. It is not too hard for us to see why [blank_p4_4] is a TV set in almost every home today. And, engineers are developing interactive TV which allows communication [blank_p4_5] viewers and producers.",
+                questions: [
+                    { id: "p4_1", label: "1", answers: ["most"], exp: "Cấu trúc so sánh nhất bắt buộc: 'one of the most + adj dài + N số nhiều'." },
+                    { id: "p4_2", label: "2", answers: ["programs", "programmes", "shows"], exp: "Danh từ số nhiều chỉ sản phẩm truyền hình (programs/shows)." },
+                    { id: "p4_3", label: "3", answers: ["example", "instance"], exp: "Cụm từ nối để đưa ra ví dụ minh họa: 'for example / for instance'." },
+                    { id: "p4_4", label: "4", answers: ["there"], exp: "Cấu trúc chỉ sự tồn tại khách quan: 'there is a TV set' (có một chiếc vô tuyến)." },
+                    { id: "p4_5", label: "5", answers: ["between"], exp: "Giới từ liên kết hai đối tượng: 'communication between A and B' (kết nối giữa người xem và nhà sản xuất)." }
+                ]
+            },
+            {
+                sectionId: "p5",
+                title: "Passage 5: THE MAYAS (Đề chuyên Đồng Nai)",
+                rawText: "Many tourists who visit Central America find [blank_p5_1] surprising to learn that the Mayas still live there. [blank_p5_2] it is true that their ancient civilization came to an end when their country was [blank_p5_3] over by the Spanish conquistadors, the Mayan people carried [blank_p5_4] living in the area. Today there are an estimated 1.2 million Mayas [blank_p5_5] live in southern Mexico, and many other areas of Central America states have large Mayan populations as [blank_p5_6]. <br><br>Many their stories and art forms have remained [blank_p5_7] over time, and today, women weave clothing and carpets that have signs and symbols that are the same as [blank_p5_8], found in ancient temples. The different patterns and symbols on these brightly colored [blank_p5_9] not only look attractive, [blank_p5_10] can also communicate important information such as marital [blank_p5_11]. <br><br>Even though the majority of the Mayas are now Catholics, many of the festivals that they [blank_p5_12] part in are mixture of the old rituals that their ancestors [blank_p5_13] to practice and more modern Christian elements. It was perhaps the Mayas' ability to [blank_p5_14] and change that made possible for them to survive to the [blank_p5_15] day.",
+                questions: [
+                    { id: "p5_1", label: "1", answers: ["it"], exp: "Cấu trúc chủ ngữ giả đóng vai trò tân ngữ: 'find it + adj + to do something'." },
+                    { id: "p5_2", label: "2", answers: ["although", "though", "while"], exp: "Liên từ đứng đầu mệnh đề trạng ngữ chỉ sự tương phản đối lập (Mặc dù...)." },
+                    { id: "p5_3", label: "3", answers: ["taken"], exp: "Cụm động từ bị động: 'be taken over by' (bị tiếp quản/xâm chiếm bởi ai)." },
+                    { id: "p5_4", label: "4", answers: ["on"], exp: "Phrasal verb mang tính liên tục: 'carry on + V-ing' (tiếp tục sinh sống)." },
+                    { id: "p5_5", label: "5", answers: ["who", "that"], exp: "Đại từ quan hệ làm chủ ngữ thay thế cho danh từ chỉ người số nhiều 'Mayas'." },
+                    { id: "p5_6", label: "6", answers: ["well"], exp: "Thành ngữ cố định đứng cuối câu nhằm bổ sung thông tin: 'as well' (cũng như vậy)." },
+                    { id: "p5_7", label: "7", answers: ["unchanged"], exp: "Tính từ đi sau hệ động từ 'remain unchanged' (vẫn giữ nguyên, không bị biến đổi)." },
+                    { id: "p5_8", label: "8", answers: ["those"], exp: "Đại từ định danh số nhiều 'those' dùng để thay thế tránh lặp lại từ 'signs and symbols' phía trước." },
+                    { id: "p5_9", label: "9", answers: ["clothes", "fabrics", "garments", "clothing"], exp: "Danh từ phù hợp ngữ cảnh nói về các sản phẩm thêu dệt (quần áo/vải vóc)." },
+                    { id: "p5_10", label: "10", answers: ["but"], exp: "Cấu trúc tương hợp liên từ đẳng lập: 'not only... but also' (không những... mà còn)." },
+                    { id: "p5_11", label: "11", answers: ["status"], exp: "Cụm danh từ thuật ngữ đời sống: 'marital status' (tình trạng hôn nhân)." },
+                    { id: "p5_12", label: "12", answers: ["take"], exp: "Cụm động từ tham gia: 'take part in' (tham dự vào các lễ hội)." },
+                    { id: "p5_13", label: "13", answers: ["used"], exp: "Cấu trúc thói quen trong quá khứ đã chấm dứt: 'used to do something'." },
+                    { id: "p5_14", label: "14", answers: ["adapt"], exp: "Động từ tương hợp ngữ cảnh kết nối với từ 'change': 'ability to adapt and change' (khả năng thích nghi và thay đổi)." },
+                    { id: "p5_15", label: "15", answers: ["present"], exp: "Cụm danh từ thời gian cố định: 'to the present day' (cho tới tận ngày nay)." }
+                ]
+            }
+        ];
+
+        // HÀM CHUẨN HÓA CHUỖI ĐỂ SO KHỚP CHÍNH XÁC KHÔNG PHÂN BIỆT KÝ TỰ ĐẶC BIỆT
+        function cleanStr(text) {
+            return text.toLowerCase().trim().replace(/[.,\/#!$%\^&\*;:{}=\-_`~()’']/g,"").replace(/\s+/g," ");
+        }
+
+        // KHỞI TẠO VÀ GENERATE GIAO DIỆN TỰ ĐỘNG
+        function buildClozeDOM() {
+            const root = document.getElementById('dynamic-cloze-root');
+            
+            clozeData.forEach(sec => {
+                // Thêm tiêu đề cho từng đoạn văn
+                const titleDiv = document.createElement('div');
+                titleDiv.className = 'section-title';
+                titleDiv.innerText = sec.title;
+                root.appendChild(titleDiv);
+
+                // Thêm khối văn bản đoạn văn
+                const pCard = document.createElement('div');
+                pCard.className = "passage-card";
+                pCard.id = `card_${sec.sectionId}`;
+                
+                let processedHTML = sec.rawText;
+                sec.questions.forEach(q => {
+                    const inputHTML = `<span style="white-space: nowrap;"><span class="blank-idx">(${q.label})</span><input type="text" class="cloze-input" id="input_${q.id}"></span>`;
+                    processedHTML = processedHTML.replace(`[blank_${sec.sectionId}_${q.label}]`, inputHTML);
+                });
+                
+                pCard.innerHTML = processedHTML;
+                root.appendChild(pCard);
+
+                // Thiết lập thanh kiểm tra kết quả cục bộ cuối mỗi đoạn
+                const ctrlDiv = document.createElement('div');
+                ctrlDiv.className = "section-control";
+                
+                const btn = document.createElement('button');
+                btn.className = "btn-check-section";
+                btn.innerText = "Kiểm tra đáp án cụm này";
+                btn.onclick = () => verifyCurrentSection(sec);
+                
+                ctrlDiv.appendChild(btn);
+                root.appendChild(ctrlDiv);
+
+                // Thêm khối bảng giải thích chi tiết ẩn sẵn bên dưới
+                const expPanel = document.createElement('div');
+                expPanel.className = "explanation-panel";
+                expPanel.id = `panel_exp_${sec.sectionId}`;
+                
+                let expHTML = `<h4 style="margin-top:0;color:var(--primary-color);">💡 PHÂN TÍCH NGỮ PHÁP TỪ MS LÊ HẰNG:</h4>`;
+                sec.questions.forEach((q) => {
+                    expHTML += `
+                        <div class="exp-item">
+                            <span class="badge-idx">(${q.label})</span> 
+                            <b>Từ cần điền:</b> <span style="color:var(--correct-color); font-weight:900;">${q.answers.join(' / ')}</span> 
+                            <br><i style="color:#64748B;">➔ Giải thích: ${q.exp}</i>
+                        </div>
+                    `;
+                });
+                expPanel.innerHTML = expHTML;
+                root.appendChild(expPanel);
+            });
+        }
+
+        // XỬ LÝ CHẤM ĐIỂM RIÊNG BIỆT CHO TỪNG ĐOẠN VĂN
+        function verifyCurrentSection(sec) {
+            let hasError = false;
+
+            sec.questions.forEach(q => {
+                const inputEl = document.getElementById(`input_${q.id}`);
+                if (!inputEl) return;
+
+                const userVal = cleanStr(inputEl.value);
+                const isCorrect = q.answers.some(ans => cleanStr(ans) === userVal);
+
+                inputEl.disabled = true;
+                if (isCorrect) {
+                    inputEl.className = "cloze-input correct";
+                } else {
+                    inputEl.className = "cloze-input wrong";
+                    hasError = true;
+                }
+            });
+
+            if (hasError) {
+                soundError();
+            } else {
+                soundSuccess();
+                launchConfetti();
+            }
+
+            const panel = document.getElementById(`panel_exp_${sec.sectionId}`);
+            if (panel) panel.style.display = "block";
+        }
+
+        // TỔNG HỢP VÀ HIỂN THỊ KẾT QUẢ TOÀN BỘ BÀI THI CHUYÊN LỚP 10
+        function calculateFinalScore() {
+            let totalBlanks = 0;
+            let totalCorrect = 0;
+
+            clozeData.forEach(sec => {
+                sec.questions.forEach(q => {
+                    totalBlanks++;
+                    const inputEl = document.getElementById(`input_${q.id}`);
+                    if (inputEl) {
+                        const userVal = cleanStr(inputEl.value);
+                        const isRight = q.answers.some(ans => cleanStr(ans) === userVal);
+                        if (isRight) totalCorrect++;
+                        
+                        inputEl.disabled = true;
+                        if (isRight) inputEl.className = "cloze-input correct";
+                        else inputEl.className = "cloze-input wrong";
+                    }
+                });
+                const panel = document.getElementById(`panel_exp_${sec.sectionId}`);
+                if (panel) panel.style.display = "block";
+            });
+
+            const rate = (totalCorrect / totalBlanks) * 100;
+            let feedback = "";
+
+            if (rate === 100) {
+                feedback = "Tuyệt đỉnh! Con đã làm đúng hoàn hảo 55/55 câu Open Cloze. Trình độ đọc hiểu ngữ pháp Chuyên Anh của con thực sự rất đáng tự hào!";
+            } else if (rate >= 80) {
+                feedback = "Thành tích rất cao! Con đã làm chủ được hầu hết ngữ cảnh và collocations nâng cao. Sẵn sàng chiến đấu phòng thi Chuyên rồi!";
+            } else if (rate >= 55) {
+                feedback = "Kết quả khá ổn. Tuy nhiên con cần lưu ý thêm các bẫy giới từ và từ nối quan hệ. Hãy đọc kỹ phần giải thích chi tiết của cô nhé!";
+            } else {
+                feedback = "Cố lên con nhé! Dạng bài Open Cloze đề chuyên luôn đòi hỏi tích lũy từ vựng dày dặn. Hãy rà soát lại các ô màu đỏ cùng bảng giải thích nha.";
+            }
+
+            document.getElementById('txt-score').innerText = `${totalCorrect} / ${totalBlanks}`;
+            document.getElementById('txt-feedback').innerText = feedback;
+            document.getElementById('score-modal').style.display = "flex";
+            
+            if (rate >= 80) {
+                soundSuccess();
+                launchConfetti();
+            } else {
+                soundError();
+            }
+        }
+
+        function resetQuiz() {
+            document.getElementById('score-modal').style.display = "none";
+            location.reload();
+        }
+
+        // ENGINE HIỆU ỨNG PHÁO HOA CONFETTI TRÊN MÀN HÌNH CANVAS
+        const cv = document.getElementById('canvas-confetti');
+        const cx = cv.getContext('2d');
+        let confettis = [];
+        function resizeCanvas() {
+            cv.width = window.innerWidth;
+            cv.height = window.innerHeight;
+        }
+        window.addEventListener('resize', resizeCanvas);
+        resizeCanvas();
+
+        function launchConfetti() {
+            for (let i = 0; i < 50; i++) {
+                confettis.push({
+                    x: window.innerWidth / 2 + (Math.random() - 0.5) * 300,
+                    y: window.innerHeight / 2 + (Math.random() - 0.5) * 200,
+                    vx: (Math.random() - 0.5) * 15,
+                    vy: (Math.random() - 0.7) * 16,
+                    color: `hsl(${Math.random() * 360}, 100%, 50%)`,
+                    r: Math.random() * 5 + 5,
+                    opacity: 1
+                });
+            }
+        }
+
+        function renderConfettiLoop() {
+            cx.clearRect(0, 0, cv.width, cv.height);
+            confettis.forEach((p, idx) => {
+                p.x += p.vx;
+                p.y += p.vy;
+                p.vy += 0.25;
+                p.opacity -= 0.015;
+                if (p.opacity <= 0) {
+                    confettis.splice(idx, 1);
+                } else {
+                    cx.fillStyle = p.color;
+                    cx.globalAlpha = p.opacity;
+                    cx.beginPath();
+                    cx.arc(p.x, p.y, p.r, 0, Math.PI * 2);
+                    cx.fill();
+                }
+            });
+            cx.globalAlpha = 1;
+            requestAnimationFrame(renderConfettiLoop);
+        }
+        requestAnimationFrame(renderConfettiLoop);
+
+        window.onload = function() {
+            buildClozeDOM();
+        };
+    </script>
+</body>
+</html>
